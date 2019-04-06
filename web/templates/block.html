@@ -1,19 +1,28 @@
 {% extends "index.html" %}
 
 {% block content %}
-<body style="background: url('../static/pictures/carpet.jpg') no-repeat center center fixed; background-size: cover">
+<div style="background: black; display: flex; width: 50%; height: 100%; display: flex; flex-direction: column;  align-items: center; justify-content: center;">
+        <form method="post" enctype="multipart/form-data" style="display: flex; flex-direction: column;  align-items: center; justify-content: center;">
+            {{ form.file.label(style="font-size: 40px; padding: 2vh 16vh; background: white; border-radius: 6px; font-family: Lucida Console, Monospace") }}<br>
+            {{ form.file(style="display: none;") }}<br>
+            {{ form.submit(style="border-radius: 4px; font-size: 20px; background: white; font-family: Lucida Console, Monospace; border: none; padding: 1vh 4vh") }}
+        </form>
+</div>
+<div style="background: white; display: flex; width: 50%; height: 100%; flex-direction: column;  align-items: center; justify-content: center;">
+    <p style="color: black; text-align: center; width: 30%; font-family: Lucida Console, Monospace; font-size: 20px;">
+        Danis Saifullin <br>
+        vk.com/dantatartes
+    </p>
+    <p style="color: black; text-align: center; width: 30%; font-family: Lucida Console, Monospace; font-size: 20px;">
+        Nickolai Platonov <br>
+        vk.com/platun0v
+    </p>
+    <p style="color: black; text-align: center; width: 30%; font-family: Lucida Console, Monospace; font-size: 20px;">
+        Za Chong Nguyen <br>
+        vk.com/boyfromasia
+    </p>
+</div>
 
-<form method="post" enctype="multipart/form-data">
-    <div style="display: absolute; background: DarkGray; width: 30%; margin-left: 35%; margin-top: 20%; padding: 50px; border-radius: 8px;  border: 4px solid #580000 ;">
-        <div style="">
-            {{ form.file.label }}<br>
-            {{ form.file() }}<br>
-        </div>
-        {{ form.submit(style="position: relative; background: #800000; color: white; border-radius: 8px; padding: 12px 40px; margin-left: 17%; top: 5vh; font-size: 20px; font-weight: bold") }}
-    </div>
-</form>
-
-</body>
 
 {% endblock %}
 

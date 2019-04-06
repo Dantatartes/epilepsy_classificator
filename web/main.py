@@ -9,7 +9,7 @@ app.secret_key = 'development_key'
 
 
 class Form(FlaskForm):
-    file = FileField("", validators=[DataRequired()])
+    file = FileField("File", validators=[DataRequired()])
     submit = SubmitField('Classify')
 
 
@@ -20,8 +20,8 @@ def index():
     if request.method == "POST":
         file = form.file.data
         name = file.filename
-        print(name)
-        file.save(f"static/save/{name}")
+        if name.split(".")[-1] == "pkl":
+            file.save(f"static/save/{name}")
     return render_template("block.html", form=form)
 
 
