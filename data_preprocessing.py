@@ -38,7 +38,7 @@ def preprocess_2():
     if not os.path.isdir('pp_2_reduced'):
         os.mkdir('pp_2_reduced')
 
-    for i in tqdm_notebook(range(len(os.listdir('pp_1_2/')))):
+    for i in tqdm_notebook(range(len(os.listdir('pp_2_samples/')))):
         with open(f'pp_2_samples/seiz_{i}.pkl', 'rb') as f:
             data = pickle.load(f)
 
