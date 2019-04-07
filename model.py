@@ -268,7 +268,7 @@ class Model:
                 else:
                     ret_true = False
                     ret_letters = True
-                # data = data[1]                
+                data = data[1]
                 data = np.array([
                     *list(np.std(data, axis=0)),
                     *list(np.mean(data, axis=0)),
