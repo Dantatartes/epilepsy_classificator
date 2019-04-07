@@ -1,20 +1,21 @@
 import torch
-from torch.utils import data
 from torch import nn
+from torch.utils import data as data_utils
 from torch.nn import functional as F
 import torch.optim as optim
 from torch.optim import lr_scheduler
 import pickle
 import os
+import functools
+import shutil
 
 import time
 
-use_gpu = False
 labels = ['ABSZ', 'CPSZ', 'FNSZ', 'GNSZ', 'SPSZ', 'TCSZ', 'TNSZ']
 labels_2_num = {labels[i]: i for i in range(len(labels))}
 
 
-class Dataset(data.Dataset):
+class Dataset(data_utils.Dataset):
     def __init__(self, path):
         self.path = path
 
@@ -26,22 +27,16 @@ class Dataset(data.Dataset):
             data = pickle.load(f)
             return {'data': data[1], 'label': labels_2_num[data[0]]}
 
-dataset_ = Dataset('pp_2_reduced')
 
-
-class Model(nn.Module):
+class FcModelNN(nn.Module):
     def __init__(self, D_out):
-        super(Model, self).__init__()
-
-        self.max_pool = nn.MaxPool2d(kernel_size=(1, 2), stride=2)
-
+        super(FcModelNN, self).__init__()
         self.fc1_1 = nn.Linear(in_features=900, out_features=256)
         self.fc1_2 = nn.Linear(in_features=256, out_features=64)
         self.fc1_3 = nn.Linear(in_features=64, out_features=32)
         self.fc1_4 = nn.Linear(in_features=32, out_features=D_out)
 
     def forward(self, x):
-
         h = F.relu(self.fc1_1(x))
         h = F.relu(self.fc1_2(h))
         h = F.relu(self.fc1_3(h))
@@ -49,7 +44,7 @@ class Model(nn.Module):
 
         return h
 
-def train_model(model, criterion, optimizer, scheduler, dataloader_, num_epochs=25):
+def train_model(model, criterion, optimizer, dataloader_, is_cuda=False, num_epochs=25):
     since = time.time()
     
     losses = []
@@ -60,13 +55,11 @@ def train_model(model, criterion, optimizer, scheduler, dataloader_, num_epochs=
         print('-' * 10)
 
         running_loss = 0.0
-       # scheduler.step()
 
         for data in dataloader_:
             inputs, labels = data['data'].float(), data['label']
-            inputs = inputs.view(inputs.size(0), -1)
-
-            if use_gpu:
+            
+            if is_cuda:
                 inputs = inputs.cuda()
                 labels = labels.cuda()
 
@@ -79,7 +72,7 @@ def train_model(model, criterion, optimizer, scheduler, dataloader_, num_epochs=
 
             running_loss += loss.item()
 
-        epoch_loss = running_loss / len(dataset_)
+        epoch_loss = running_loss / len(dataloader_.dataset)
 
         losses.append(epoch_loss)
 
