@@ -50,7 +50,3 @@ def preprocess_2():
             with open(f'pp_2_reduced/seiz_{cnt}.pkl', 'wb') as f:
                 pickle.dump(data, f)
                 cnt += 1
-                
-             
-def preprocess_df():
-    pass
