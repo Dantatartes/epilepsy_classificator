@@ -1,6 +1,6 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect
 from flask_wtf import FlaskForm
-from wtforms import FileField, SubmitField
+from wtforms import MultipleFileField, SubmitField
 from wtforms.validators import DataRequired
 
 
@@ -8,8 +8,14 @@ app = Flask(__name__)
 app.secret_key = 'development_key'
 
 
+def check_pkl_files(file):
+    if file.filename.split(".")[-1] == "pkl":
+        return True
+    return False
+
+
 class Form(FlaskForm):
-    file = FileField("File", validators=[DataRequired()])
+    file = MultipleFileField("File", validators=[DataRequired()])
     submit = SubmitField('Classify')
 
 
@@ -18,10 +24,12 @@ class Form(FlaskForm):
 def index():
     form = Form()
     if request.method == "POST":
-        file = form.file.data
-        name = file.filename
-        if name.split(".")[-1] == "pkl":
-            file.save(f"static/save/{name}")
+        files = form.file.data
+        for file in files:
+            if check_pkl_files(file) is False:
+                return redirect("/index")
+        for file in files:
+            file.save(f"static/save/{file.filename}")
     return render_template("block.html", form=form)
 
 
